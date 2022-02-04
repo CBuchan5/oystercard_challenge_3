@@ -16,11 +16,11 @@ describe Oystercard do
   let(:entry_station){ double :entry_station}
   let(:exit_station){ double :exit_station}
 
-  it 'stores the entry station' do
-    subject.top_up(50)
-    subject.touch_in(:entry_station)
-    expect(subject.entry_station).to eq :entry_station
-    end 
+  # it 'stores the entry station' do
+  #   subject.top_up(50)
+  #   subject.touch_in(:entry_station)
+  #   expect(subject.entry_station).to eq :entry_station
+  #   end 
   # end
 
 
@@ -63,7 +63,8 @@ describe Oystercard do
 
     it "returns station if the card has been touched in" do
       subject.top_up(20)
-      expect(subject.touch_in(:entry_station)).to eq :entry_station
+      subject.touch_in(:entry_station)
+      expect(subject.current_journey).to eq ({ :entry_station => :entry_station})
     end
 
     it "has an empty list of journeys by default" do
@@ -82,7 +83,9 @@ describe Oystercard do
   describe "#touch_out" do
 
     it "Set entry_station to nil if the card has been touched out" do
-      expect(subject.touch_out(@entry_station)).to eq nil
+      subject.touch_out(:exit_station) 
+      expect(subject.current_journey).to eq {}
+      # expect(subject.touch_out(exit_station)).to eq nil
     end
 
     it "deducts minimum fare upon touching out" do
