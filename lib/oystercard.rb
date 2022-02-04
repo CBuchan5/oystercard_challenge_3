@@ -19,11 +19,10 @@ class Oystercard
     end
 
     def in_journey?
-      # @in_journey
-      if @entry_station == nil 
-        false
-      else
-        true
+      if @current_journey.count != 0
+        return true
+      elsif @current_journey.count == 0
+        return false
       end
     end
 

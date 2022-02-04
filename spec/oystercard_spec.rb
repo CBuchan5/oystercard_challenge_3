@@ -16,21 +16,12 @@ describe Oystercard do
   let(:entry_station){ double :entry_station}
   let(:exit_station){ double :exit_station}
 
-  # it 'stores the entry station' do
-  #   subject.top_up(50)
-  #   subject.touch_in(:entry_station)
-  #   expect(subject.entry_station).to eq :entry_station
-  #   end 
-  # end
-
 
   it "has a balance of 0 upon initialization" do
     expect(subject.balance).to eq 0
   end
 
-  it "is initially not in a journey" do
-    expect(subject).not_to be_in_journey
-  end
+  
 
   describe "#top_up" do
 
@@ -64,7 +55,7 @@ describe Oystercard do
     it "returns station if the card has been touched in" do
       subject.top_up(20)
       subject.touch_in(:entry_station)
-      expect(subject.current_journey).to eq ({ :entry_station => :entry_station})
+      expect(subject.current_journey).to eq ({:entry_station => :entry_station})
     end
 
     it "has an empty list of journeys by default" do
@@ -84,7 +75,7 @@ describe Oystercard do
 
     it "Set entry_station to nil if the card has been touched out" do
       subject.touch_out(:exit_station) 
-      expect(subject.current_journey).to eq {}
+      expect(subject.current_journey).to eq ({})
       # expect(subject.touch_out(exit_station)).to eq nil
     end
 
@@ -95,21 +86,28 @@ describe Oystercard do
       expect { subject.touch_out(:exit_station) }.to change { subject.balance }.by -minimum
     end
 
-    it "should record the exit station upon touch_out" do
-      # minimum = Oystercard::MINIMUM
+    it "should record the journey on touch out" do
       subject.top_up(25)
       subject.touch_in(:entry_station)
-      # subject.entry_station
-      # subject.touch_out(:exit_station)
-      # subject.deduct(1)
-      expect(subject.touch_out(:exit_station)).to eq :exit_station
+      subject.touch_out(:exit_station)
+      expect(subject.journeys).to eq ([{:entry_station => :entry_station, :exit_station => :exit_station}])
     end
-
     # it "shuould record a list of exit stations upon touch_out" do
     # end
-
-
   end
 
-  
+  describe '#in_journey?' do
+
+    it 'returns  that we are in journey after touching in' do 
+    subject.top_up(10)
+    subject.touch_in(:entry_station)
+    expect(subject.in_journey?).to eq true
+    end
+
+    it "is initially not in a journey" do
+      expect(subject).not_to be_in_journey
+      expect(subject.in_journey?).to eq false
+    end
+    
+  end
 end
